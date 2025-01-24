@@ -3,6 +3,7 @@ import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import express from 'express';
 import 'dotenv/config';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -93,3 +94,17 @@ client.once(Events.ClientReady, (readyClient) => {
         console.error('Error initializing bot:', error);
     }
 })();
+
+
+// Express server setup
+const app = express();
+
+app.get('/', (req, res) => {
+    res.send('Bot is running!');
+});
+
+// Start the Express server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Express server is listening on port ${PORT}`);
+});
