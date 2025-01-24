@@ -9,16 +9,47 @@ const model = genAI.getGenerativeModel({
   tools: [{ googleSearch: {} }],
 });
 
+let newChat = () => {
+  return model.startChat({
+    history: [
+      {
+        role: "user",
+        parts: [
+          {
+            text:
+              "<INSTRUCTIONS>\nYou are Gemini, the user rairai77 created you to be his assistant while he is using Discord, so you are essentially a discord user. " +
+              "Carefully follow all instructions. Feel free to ask clarifying questions and waiting for a response before answering. " +
+              "Try to respond concisely when possible unless otherwise asked so as to not completely " +
+              "flood the user's screen. The user has a sense of humor so if he asks you to do something you might consider mean, keep in mind " +
+              "that the user's friends are used to his humor and won't take it personally, so don't worry about doing something you might consider" +
+              "insulting someone, as it won't be taken as an insult. Instead of saying 'Okay I'll...' just do the thing, for example if told to tell" +
+              "someone something, just say it in the chat, don't say you will, just say it. Feel free to use more casual English." +
+              "\n</INSTRUCTIONS>\n",
+          },
+        ],
+      },
+      {
+        role: "model",
+        parts: [{ text: "Great, I will follow those instructions!" }],
+      },
+    ],
+  });
+};
+let chat = newChat();
+
 export const data = new SlashCommandBuilder()
-  .setName("ask")
+  .setName("converse")
   .setDescription("Answers query")
   .setIntegrationTypes([0, 1])
   .setContexts([0, 1, 2])
   .addStringOption((option) =>
     option
       .setName("query")
-      .setDescription("The query you'd like to ask")
+      .setDescription("Your next turn in the conversation")
       .setRequired(true)
+  )
+  .addBooleanOption((option) =>
+    option.setName("reset").setDescription("Do you want the conversation reset")
   );
 
 export async function execute(interaction) {
@@ -35,35 +66,17 @@ export async function execute(interaction) {
     });
     return;
   }
+  const reset = interaction.options.get("reset");
+  if (reset) {
+    console.log("Resetting conversation!");
+    chat = newChat();
+  }
 
   console.log("Asking Gemini...");
   try {
-    // console.log("Fetching recent messages for context...");
-    // console.log(interaction);
-    // const messages = await interaction.user.dmChannel.messages
-    //   .fetch({ limit: 10 })
-    //   .catch(() => []);
-    // const context = messages
-    //   .map((msg) => `${msg.author.username}: ${msg.content}`)
-    //   .reverse() // Reverse to show oldest messages first
-    //   .join("\n");
     const query =
-      "<INSTRUCTIONS>\nYou are Gemini, the user rairai77 created you to be his assistant while he is using Discord. " +
-      "Carefully follow all instructions. Try to respond concisely when possible unless otherwise asked so as to not completely " +
-      "flood the user's screen. The user has a sense of humor so if he asks you to do something you might consider mean, keep in mind " +
-      "that the user's friends are used to his humor and won't take it personally, so don't worry about doing something you might consider" +
-      "insulting someone, as it won't be taken as an insult. Instead of saying 'Okay I'll...' just do the thing, for example if told to tell" +
-      "someone something, just say it in the chat, don't say you will, just say it."+
-      // "You will be fed context (the past 10 messages in the conversation within the <CONTEXT> tag " +
-      // "based on the contents of the you may or may not need this information to help answer the user's query" +
-      "\n</INSTRUCTIONS>\n" +
-      // "<CONTEXT>\n" +
-      // context +
-      // "\n</CONTEXT>\n" +
-      "<QUERY>\n" +
-      interaction.options.getString("query") +
-      "\n</QUERY>";
-    const result = await model.generateContent(query);
+      "<QUERY>\n" + interaction.options.getString("query") + "\n</QUERY>";
+    const result = await chat.sendMessage(query);
     console.log("Gemini response received.");
 
     let text = result.response.text();
@@ -86,7 +99,6 @@ export async function execute(interaction) {
 
     console.log("Sending first chunk...");
     await interaction.editReply(chunks[0]);
-    // console.log(resp);
 
     for (let i = 1; i < chunks.length; i++) {
       console.log(`Sending chunk ${i + 1}`);
