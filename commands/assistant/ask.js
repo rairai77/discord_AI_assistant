@@ -1,10 +1,16 @@
 import { SlashCommandBuilder } from "discord.js";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import {
+  DynamicRetrievalMode,
+  GoogleGenerativeAI,
+} from "@google/generative-ai";
 import "dotenv/config";
 
 const api_key = process.env.GEMINI_KEY;
 const genAI = new GoogleGenerativeAI(api_key);
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+const model = genAI.getGenerativeModel({
+  model: "gemini-2.0-flash-exp",
+  tools: [{ googleSearch: {} }],
+});
 
 export const data = new SlashCommandBuilder()
   .setName("ask")
@@ -50,16 +56,17 @@ export async function execute(interaction) {
 
     const maxLength = 1950;
     const chunks = [];
-    while (text.length > 0) {
+    while (text.length > maxLength) {
       const splitIndex = text.lastIndexOf(" ", maxLength);
       const safeSplit = splitIndex > -1 ? splitIndex : maxLength;
       chunks.push(text.slice(0, safeSplit));
       text = text.slice(safeSplit).trim();
     }
+    chunks.push(text.trim());
 
     console.log("Sending first chunk...");
     let resp = await interaction.editReply(chunks[0]);
-    console.log(resp);
+    // console.log(resp);
 
     for (let i = 1; i < chunks.length; i++) {
       console.log(`Sending chunk ${i + 1}`);
