@@ -58,7 +58,8 @@ export async function execute(interaction) {
     }
 
     console.log("Sending first chunk...");
-    await interaction.editReply(chunks[0]);
+    let resp = await interaction.editReply(chunks[0]);
+    console.log(resp);
 
     for (let i = 1; i < chunks.length; i++) {
       console.log(`Sending chunk ${i + 1}`);
