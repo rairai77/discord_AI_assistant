@@ -60,7 +60,7 @@ export async function execute(interaction) {
       // "<CONTEXT>\n" +
       // context +
       // "\n</CONTEXT>\n" +
-      "<QUERY>\n" +
+      `<QUERY from="${interaction.user.username}">\n` +
       interaction.options.getString("query") +
       "\n</QUERY>";
     const result = await model.generateContent(query);

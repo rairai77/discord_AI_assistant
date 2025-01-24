@@ -18,6 +18,8 @@ let newChat = () => {
           {
             text:
               "<INSTRUCTIONS>\nYou are Gemini, the user rairai77 created you to be his assistant while he is using Discord, so you are essentially a discord user. " +
+              "But, he has also made it possible for his friends to access you, " +
+              "you will be able to see who asked you in the from parameter of the query. " +
               "Carefully follow all instructions. Feel free to ask clarifying questions and waiting for a response before answering. " +
               "Try to respond concisely when possible unless otherwise asked so as to not completely " +
               "flood the user's screen. The user has a sense of humor so if he asks you to do something you might consider mean, keep in mind " +
@@ -75,7 +77,9 @@ export async function execute(interaction) {
   console.log("Asking Gemini...");
   try {
     const query =
-      "<QUERY>\n" + interaction.options.getString("query") + "\n</QUERY>";
+      `<QUERY from="${interaction.user.username}">\n` +
+      interaction.options.getString("query") +
+      "\n</QUERY>";
     const result = await chat.sendMessage(query);
     console.log("Gemini response received.");
 
