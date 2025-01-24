@@ -19,19 +19,23 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction) {
+  console.log("executing");
   await interaction.deferReply();
   const allowedUserId = "229094733182533643"; // Replace with the allowed user's Discord ID
   const userId = interaction.user.id;
 
   if (userId !== allowedUserId) {
+    console.log("cancelling");
     await interaction.editReply({
       content: `Hello, ${interaction.user.username}! You are not authorized to use this command.`,
       ephemeral: true,
     });
   } else {
+    console.log("asking gemini");
     const result = await model.generateContent(
       interaction.options.getString("query")
     );
+    console.log("asked gemini");
     let text = result.response.text();
     const maxLength = 1950;
     // Split the text into chunks of the specified max length
