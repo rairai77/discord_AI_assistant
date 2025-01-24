@@ -21,12 +21,18 @@ importers:
         specifier: ^4.21.2
         version: 4.21.2
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.18.0
+        version: 9.18.0
       eslint:
         specifier: ^9.18.0
         version: 9.18.0
       eslint-js:
         specifier: github:eslint/js
         version: https://codeload.github.com/eslint/js/tar.gz/6fca5c452bfb1cd0e7ed23cbfc53d2048b5c14b8
+      globals:
+        specifier: ^15.14.0
+        version: 15.14.0
 
 packages:
 
@@ -410,6 +416,10 @@ packages:
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
+    engines: {node: '>=18'}
+
+  globals@15.14.0:
+    resolution: {integrity: sha512-OkToC372DtlQeje9/zHIo5CT8lRP/FUgEOKBEhU4e0abL7J7CD24fD9ohiLN5hagG/kWCYj4K5oaxxtj2Z0Dig==}
     engines: {node: '>=18'}
 
   gopd@1.2.0:
@@ -1182,6 +1192,8 @@ snapshots:
       is-glob: 4.0.3
 
   globals@14.0.0: {}
+
+  globals@15.14.0: {}
 
   gopd@1.2.0: {}
 

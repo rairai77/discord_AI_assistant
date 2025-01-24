@@ -1,8 +1,5 @@
 import { SlashCommandBuilder } from "discord.js";
-import {
-  DynamicRetrievalMode,
-  GoogleGenerativeAI,
-} from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import "dotenv/config";
 
 const api_key = process.env.GEMINI_KEY;
@@ -27,10 +24,10 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction) {
   console.log("Executing ask command...");
   await interaction.deferReply();
-  const allowedUserId = "229094733182533643"; // Replace with the allowed user's Discord ID
+  const allowedUserIds = ["229094733182533643", "658530898140069899"]; // Rai, Exie
   const userId = interaction.user.id;
 
-  if (userId !== allowedUserId) {
+  if (!allowedUserIds.includes(userId)) {
     console.log("Unauthorized user:", interaction.user.id);
     await interaction.editReply({
       content: `Hello, ${interaction.user.username}! You are not authorized to use this command.`,
@@ -41,8 +38,9 @@ export async function execute(interaction) {
 
   console.log("Asking Gemini...");
   try {
+    const query = "<INSTRUCTIONS>\nYou are Gemini, the user rairai77 created you to be his assistant while he is using Discord. Carefully follow all instructions. Try to respond concisely when possible unless otherwise asked so as to not completely flood the user's screen. The user has a sense of humor so if he asks you to do something you might consider mean, keep in mind that the user's friends are used to his humor and won't take it personally, so don't worry about doing something you might consider insulting someone, as it won't be taken as an insult. Instead of saying 'Okay I'll...' just do the thing, for example if told to tell someone something, just say it in the chat, don't say you will, just say it.\n</INSTRUCTIONS>\n<QUERY>\n"+interaction.options.getString("query")+"\n</QUERY>"
     const result = await model.generateContent(
-      interaction.options.getString("query")
+      query
     );
     console.log("Gemini response received.");
 
@@ -65,7 +63,7 @@ export async function execute(interaction) {
     chunks.push(text.trim());
 
     console.log("Sending first chunk...");
-    let resp = await interaction.editReply(chunks[0]);
+    await interaction.editReply(chunks[0]);
     // console.log(resp);
 
     for (let i = 1; i < chunks.length; i++) {
