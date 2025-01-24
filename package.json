@@ -4,7 +4,9 @@
   "description": "",
   "type": "module",
   "main": "index.js",
+  "packageManager": "pnpm@10.0.0",
   "scripts": {
+    "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
