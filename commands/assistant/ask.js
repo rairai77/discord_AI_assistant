@@ -24,7 +24,7 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction) {
   console.log("Executing ask command...");
   await interaction.deferReply();
-  const allowedUserIds = ["229094733182533643", "658530898140069899"]; // Rai, Exie
+  const allowedUserIds = ["229094733182533643", "658530898140069899", "1100801072529932358", "686525764039868422"]; // Rai, Exie, Firrah, Nim
   const userId = interaction.user.id;
 
   if (!allowedUserIds.includes(userId)) {
@@ -48,7 +48,8 @@ export async function execute(interaction) {
     //   .reverse() // Reverse to show oldest messages first
     //   .join("\n");
     const query =
-      "<INSTRUCTIONS>\nYou are Gemini, the user rairai77 created you to be his assistant while he is using Discord. " +
+      "<INSTRUCTIONS>\nYou are Gemini, the user rairai77 created you to be his assistant while he is using Discord, but he has also made it possible for his friends to access you, "+
+      "you will be able to see who asked you in the from parameter of the query. " +
       "Carefully follow all instructions. Try to respond concisely when possible unless otherwise asked so as to not completely " +
       "flood the user's screen. The user has a sense of humor so if he asks you to do something you might consider mean, keep in mind " +
       "that the user's friends are used to his humor and won't take it personally, so don't worry about doing something you might consider" +

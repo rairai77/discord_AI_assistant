@@ -57,7 +57,7 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction) {
   console.log("Executing ask command...");
   await interaction.deferReply();
-  const allowedUserIds = ["229094733182533643", "658530898140069899"]; // Rai, Exie
+  const allowedUserIds = ["229094733182533643", "658530898140069899", "1100801072529932358", "686525764039868422"]; // Rai, Exie, Firrah, Nim
   const userId = interaction.user.id;
 
   if (!allowedUserIds.includes(userId)) {
