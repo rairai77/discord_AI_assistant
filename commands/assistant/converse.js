@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from "discord.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getApprovedUsers } from "../../data/queries.js";
 import "dotenv/config";
 
 const api_key = process.env.GEMINI_KEY;
@@ -57,10 +58,9 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction) {
   console.log("Executing ask command...");
   await interaction.deferReply();
-  const allowedUserIds = ["229094733182533643", "658530898140069899", "1100801072529932358", "686525764039868422"]; // Rai, Exie, Firrah, Nim
   const userId = interaction.user.id;
-
-  if (!allowedUserIds.includes(userId)) {
+  let user = getApprovedUsers.get(userId);
+  if (!user){
     console.log("Unauthorized user:", interaction.user.id);
     await interaction.editReply({
       content: `Hello, ${interaction.user.username}! You are not authorized to use this command.`,

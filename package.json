@@ -1,12 +1,12 @@
 {
-  "name": "rAI_DC_Bot",
+  "name": "rai_dc_bot",
   "version": "1.0.0",
   "description": "",
   "type": "module",
   "main": "index.js",
   "packageManager": "pnpm@10.0.0",
   "scripts": {
-    "start": "node .",
+    "start": "node --watch --experimental-sqlite .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

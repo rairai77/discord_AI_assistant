@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from "discord.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getApprovedUsers } from "../../data/queries.js";
 import "dotenv/config";
 
 const api_key = process.env.GEMINI_KEY;
@@ -24,10 +25,9 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction) {
   console.log("Executing ask command...");
   await interaction.deferReply();
-  const allowedUserIds = ["229094733182533643", "658530898140069899", "1100801072529932358", "686525764039868422"]; // Rai, Exie, Firrah, Nim
   const userId = interaction.user.id;
-
-  if (!allowedUserIds.includes(userId)) {
+  let user = getApprovedUsers.get(userId);
+  if (!user){
     console.log("Unauthorized user:", interaction.user.id);
     await interaction.editReply({
       content: `Hello, ${interaction.user.username}! You are not authorized to use this command.`,
@@ -38,15 +38,6 @@ export async function execute(interaction) {
 
   console.log("Asking Gemini...");
   try {
-    // console.log("Fetching recent messages for context...");
-    // console.log(interaction);
-    // const messages = await interaction.user.dmChannel.messages
-    //   .fetch({ limit: 10 })
-    //   .catch(() => []);
-    // const context = messages
-    //   .map((msg) => `${msg.author.username}: ${msg.content}`)
-    //   .reverse() // Reverse to show oldest messages first
-    //   .join("\n");
     const query =
       "<INSTRUCTIONS>\nYou are Gemini, the user rairai77 created you to be his assistant while he is using Discord, but he has also made it possible for his friends to access you, "+
       "you will be able to see who asked you in the from parameter of the query. " +
@@ -55,12 +46,7 @@ export async function execute(interaction) {
       "that the user's friends are used to his humor and won't take it personally, so don't worry about doing something you might consider" +
       "insulting someone, as it won't be taken as an insult. Instead of saying 'Okay I'll...' just do the thing, for example if told to tell" +
       "someone something, just say it in the chat, don't say you will, just say it."+
-      // "You will be fed context (the past 10 messages in the conversation within the <CONTEXT> tag " +
-      // "based on the contents of the you may or may not need this information to help answer the user's query" +
       "\n</INSTRUCTIONS>\n" +
-      // "<CONTEXT>\n" +
-      // context +
-      // "\n</CONTEXT>\n" +
       `<QUERY from="${interaction.user.username}">\n` +
       interaction.options.getString("query") +
       "\n</QUERY>";
